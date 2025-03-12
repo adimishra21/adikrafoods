@@ -6,6 +6,7 @@ public class AuthResponse {
     private String jwt;
     private String message;
     private USER_ROLE role;
+    private String fullName;
     
     public AuthResponse() {
     }
@@ -32,5 +33,13 @@ public class AuthResponse {
     
     public void setRole(USER_ROLE role) {
         this.role = role;
+    }
+    
+    public String getFullName() {
+        return fullName;
+    }
+    
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
     }
 } 

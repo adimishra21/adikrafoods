@@ -14,7 +14,7 @@ public class RestaurantDto {
     private List<String> images;
 
     private String description;
-    private long id;
+    private Long id;
 
     private String name;
 
@@ -35,5 +35,13 @@ public class RestaurantDto {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 }

@@ -1,6 +1,8 @@
 package com.adi.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import com.adi.config.JwtProvider;
@@ -27,5 +29,27 @@ public class UserServiceImpl implements UserService {
         }
         
         return user;
+    }
+    
+    @Override
+    public User saveUser(User user) {
+        return userRepository.save(user);
+    }
+    
+    @Override
+    public User getUserById(Long id) {
+        return userRepository.findById(id).orElseThrow(() -> new RuntimeException("User not found"));
+    }
+    
+    @Override
+    public User getUserByEmail(String email) {
+        return userRepository.findByEmail(email);
+    }
+    
+    @Override
+    public User getCurrentUser() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String email = authentication.getName();
+        return userRepository.findByEmail(email);
     }
 } 

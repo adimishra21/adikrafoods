@@ -1,6 +1,5 @@
 package com.adi.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -12,21 +11,23 @@ import java.util.List;
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
+@Table(name = "cart_item")
 public class CartItem {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private long id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     @ManyToOne
-    @JsonIgnore
-    private Cart cart;
+    @JoinColumn(name = "user_id")
+    private User user;
 
     @ManyToOne
-    private Food food;
+    @JoinColumn(name = "menu_item_id")
+    private MenuItem menuItem;
 
-    private int quantity;
+    private Integer quantity;
+
+    private Double price;
 
     private List<String> ingredients;
-
-    private Long totalPrice;
 }

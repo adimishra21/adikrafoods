@@ -1,100 +1,140 @@
 import React, { useState } from 'react';
-import { Container, Box, Typography, TextField, Button, Paper, Alert } from '@mui/material';
-import { Link, useNavigate } from 'react-router-dom';
-import { login } from '../auth/authService';
+import { 
+  Container, Typography, Box, TextField, Button, Paper, 
+  Link, CircularProgress, Alert, InputAdornment, IconButton 
+} from '@mui/material';
+import { Link as RouterLink, useNavigate, useLocation } from 'react-router-dom';
+import { useAuth } from '../auth/authContext';
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 
 const Login = () => {
-  const [formData, setFormData] = useState({
-    email: '',
-    password: '',
-  });
-  const [error, setError] = useState('');
-  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({
-      ...formData,
-      [name]: value,
-    });
-  };
+  const location = useLocation();
+  const { login, loading, error } = useAuth();
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [localError, setLocalError] = useState('');
+  
+  // Get the redirect path from location state or default to home
+  const from = location.state?.from?.pathname || '/';
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError('');
-    setLoading(true);
-
-    try {
-      await login(formData);
-      navigate('/');
-    } catch (error) {
-      console.error('Login error:', error);
-      setError(error.response?.data?.message || 'Failed to login. Please check your credentials.');
-    } finally {
-      setLoading(false);
+    setLocalError('');
+    
+    // Basic validation
+    if (!email.trim()) {
+      setLocalError('Email is required');
+      return;
+    }
+    
+    if (!password.trim()) {
+      setLocalError('Password is required');
+      return;
+    }
+    
+    // Attempt login
+    const result = await login(email, password);
+    
+    if (result.success) {
+      // Redirect to the page they were trying to access or home
+      navigate(from, { replace: true });
     }
   };
 
+  const toggleShowPassword = () => {
+    setShowPassword(!showPassword);
+  };
+
   return (
-    <Container maxWidth="sm">
-      <Box sx={{ mt: 8, mb: 4 }}>
-        <Paper elevation={3} sx={{ p: 4 }}>
-          <Typography variant="h4" component="h1" align="center" gutterBottom>
-            Login
-          </Typography>
+    <Container maxWidth="sm" sx={{ mt: 8, mb: 4 }}>
+      <Paper 
+        elevation={3} 
+        sx={{ 
+          p: 4, 
+          display: 'flex', 
+          flexDirection: 'column', 
+          alignItems: 'center',
+          bgcolor: 'background.paper',
+          borderRadius: 2
+        }}
+      >
+        <Typography variant="h4" component="h1" sx={{ mb: 3, color: 'text.primary', fontWeight: 'bold' }}>
+          Login
+        </Typography>
+        
+        {(error || localError) && (
+          <Alert severity="error" sx={{ width: '100%', mb: 3 }}>
+            {localError || error}
+          </Alert>
+        )}
+        
+        <Box component="form" onSubmit={handleSubmit} sx={{ width: '100%' }}>
+          <TextField
+            margin="normal"
+            required
+            fullWidth
+            id="email"
+            label="Email Address"
+            name="email"
+            autoComplete="email"
+            autoFocus
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            sx={{ mb: 2 }}
+          />
           
-          {error && (
-            <Alert severity="error" sx={{ mb: 2 }}>
-              {error}
-            </Alert>
-          )}
+          <TextField
+            margin="normal"
+            required
+            fullWidth
+            name="password"
+            label="Password"
+            type={showPassword ? 'text' : 'password'}
+            id="password"
+            autoComplete="current-password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="end">
+                  <IconButton
+                    aria-label="toggle password visibility"
+                    onClick={toggleShowPassword}
+                    edge="end"
+                  >
+                    {showPassword ? <VisibilityOffIcon /> : <VisibilityIcon />}
+                  </IconButton>
+                </InputAdornment>
+              ),
+            }}
+            sx={{ mb: 3 }}
+          />
           
-          <Box component="form" onSubmit={handleSubmit} noValidate>
-            <TextField
-              margin="normal"
-              required
-              fullWidth
-              id="email"
-              label="Email Address"
-              name="email"
-              autoComplete="email"
-              autoFocus
-              value={formData.email}
-              onChange={handleChange}
-            />
-            <TextField
-              margin="normal"
-              required
-              fullWidth
-              name="password"
-              label="Password"
-              type="password"
-              id="password"
-              autoComplete="current-password"
-              value={formData.password}
-              onChange={handleChange}
-            />
-            <Button
-              type="submit"
-              fullWidth
-              variant="contained"
-              sx={{ mt: 3, mb: 2 }}
-              disabled={loading}
-            >
-              {loading ? 'Logging in...' : 'Login'}
-            </Button>
-            <Box sx={{ textAlign: 'center' }}>
-              <Typography variant="body2">
-                Don't have an account?{' '}
-                <Link to="/register" style={{ textDecoration: 'none' }}>
-                  Register here
-                </Link>
-              </Typography>
-            </Box>
+          <Button
+            type="submit"
+            fullWidth
+            variant="contained"
+            color="primary"
+            size="large"
+            disabled={loading}
+            sx={{ py: 1.5, mb: 2 }}
+          >
+            {loading ? <CircularProgress size={24} color="inherit" /> : 'Login'}
+          </Button>
+          
+          <Box sx={{ mt: 2, textAlign: 'center' }}>
+            <Typography variant="body2" color="text.secondary">
+              Don't have an account?{' '}
+              <Link component={RouterLink} to="/register" color="primary" fontWeight="medium">
+                Register here
+              </Link>
+            </Typography>
           </Box>
-        </Paper>
-      </Box>
+        </Box>
+      </Paper>
     </Container>
   );
 };

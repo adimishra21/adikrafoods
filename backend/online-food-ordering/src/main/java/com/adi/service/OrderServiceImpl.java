@@ -47,9 +47,9 @@ public class OrderServiceImpl implements OrderService {
         Address deliveryAddress = addressRepository.findById(orderRequest.getDeliveryAddressId())
                 .orElseThrow(() -> new RuntimeException("Address not found"));
         
-        Cart cart = cartService.findUserCart(user.getId());
+        List<CartItem> cartItems = cartService.getCartItems(user);
         
-        if (cart == null || cart.getItems().isEmpty()) {
+        if (cartItems == null || cartItems.isEmpty()) {
             throw new RuntimeException("Cart is empty");
         }
         
@@ -61,8 +61,8 @@ public class OrderServiceImpl implements OrderService {
         order.setStatus("PLACED");
         
         // Calculate total price
-        double totalPrice = cart.getItems().stream()
-                .mapToDouble(item -> item.getFood().getPrice() * item.getQuantity())
+        double totalPrice = cartItems.stream()
+                .mapToDouble(item -> item.getPrice() * item.getQuantity())
                 .sum();
         
         order.setTotalPrice(totalPrice);
@@ -70,10 +70,10 @@ public class OrderServiceImpl implements OrderService {
         Order savedOrder = orderRepository.save(order);
         
         // Create order items from cart items
-        List<Orderitem> orderItems = cart.getItems().stream()
+        List<Orderitem> orderItems = cartItems.stream()
                 .map(cartItem -> {
                     Orderitem orderItem = new Orderitem();
-                    orderItem.setFood(cartItem.getFood());
+                    orderItem.setMenuItem(cartItem.getMenuItem());
                     orderItem.setOrder(savedOrder);
                     orderItem.setQuantity(cartItem.getQuantity());
                     return orderItemRepository.save(orderItem);
@@ -83,7 +83,7 @@ public class OrderServiceImpl implements OrderService {
         savedOrder.setItems(orderItems);
         
         // Clear the cart
-        cartService.clearCart(user.getId());
+        cartService.clearCart(user);
         
         return savedOrder;
     }

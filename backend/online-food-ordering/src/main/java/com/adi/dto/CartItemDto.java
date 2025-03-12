@@ -1,26 +1,29 @@
 package com.adi.dto;
 
+import com.adi.model.MenuItem;
+import lombok.Data;
+
+@Data
 public class CartItemDto {
+    private Long menuItemId;
+    private Long restaurantId;
+    private Integer quantity;
+    private String name;
+    private Double price;
+    private String imageUrl;
+    private Boolean isVeg;
     
-    private Long foodId;
-    private int quantity;
-    
-    public CartItemDto() {
-    }
-    
-    public Long getFoodId() {
-        return foodId;
-    }
-    
-    public void setFoodId(Long foodId) {
-        this.foodId = foodId;
-    }
-    
-    public int getQuantity() {
-        return quantity;
-    }
-    
-    public void setQuantity(int quantity) {
-        this.quantity = quantity;
+    /**
+     * Creates a new MenuItem from this DTO
+     * @return a new MenuItem with data from this DTO
+     */
+    public MenuItem toMenuItem() {
+        MenuItem menuItem = new MenuItem();
+        menuItem.setName(this.name);
+        menuItem.setPrice(this.price);
+        menuItem.setImageUrl(this.imageUrl);
+        menuItem.setIsVeg(this.isVeg);
+        menuItem.setDescription("Added from cart");
+        return menuItem;
     }
 } 

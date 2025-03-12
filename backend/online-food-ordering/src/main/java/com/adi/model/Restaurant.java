@@ -16,10 +16,12 @@ import java.util.List;
 @AllArgsConstructor
 public class Restaurant {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private long id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-    @OneToOne
+    @ManyToOne
+    @JoinColumn(name = "owner_id")
+    @JsonIgnore
     private User owner;
 
     private String name;
@@ -50,4 +52,18 @@ public class Restaurant {
     @JsonIgnore
     @OneToMany(mappedBy = "restaurant",cascade = CascadeType.ALL)
     private List<Food> foods= new ArrayList<>();
+
+    private String imageUrl;
+
+    private double minOrderAmount;
+
+    private double deliveryFee;
+
+    private String openingTime;
+
+    private String closingTime;
+
+    @OneToMany(mappedBy = "restaurant", cascade = CascadeType.ALL)
+    @JsonIgnore
+    private List<MenuItem> menuItems = new ArrayList<>();
 }

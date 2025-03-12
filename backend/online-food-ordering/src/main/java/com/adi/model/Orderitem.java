@@ -17,11 +17,11 @@ public class Orderitem {
     private long id;
 
     @ManyToOne
-    private Food food;
+    private MenuItem menuItem;
 
     private int quantity;
 
-    private Long totalPrice;
+    private Double price;
 
     @ManyToOne
     private Order order;

@@ -45,6 +45,7 @@ public class AuthController {
         String email = request.getEmail();
         String password = request.getPassword();
         String fullName = request.getFullName();
+        USER_ROLE role = request.getRole() != null ? request.getRole() : USER_ROLE.ROLE_CUSTOMER;
         
         User existingUser = userRepository.findByEmail(email);
         
@@ -56,7 +57,7 @@ public class AuthController {
         newUser.setEmail(email);
         newUser.setFullname(fullName);
         newUser.setPassword(passwordEncoder.encode(password));
-        newUser.setRole(USER_ROLE.ROLE_CUSTOMER);
+        newUser.setRole(role);
         
         User savedUser = userRepository.save(newUser);
         
@@ -69,43 +70,65 @@ public class AuthController {
         authResponse.setJwt(token);
         authResponse.setMessage("Registration successful");
         authResponse.setRole(savedUser.getRole());
+        authResponse.setFullName(savedUser.getFullname());
         
         return new ResponseEntity<>(authResponse, HttpStatus.CREATED);
     }
     
     @PostMapping("/signin")
     public ResponseEntity<AuthResponse> loginHandler(@RequestBody LoginRequest request) {
-        
-        String email = request.getEmail();
-        String password = request.getPassword();
-        
-        Authentication authentication = authenticate(email, password);
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-        
-        String token = jwtProvider.generateToken(authentication);
-        
-        UserDetails userDetails = customerUserDetailsService.loadUserByUsername(email);
-        User user = userRepository.findByEmail(email);
-        
-        AuthResponse authResponse = new AuthResponse();
-        authResponse.setJwt(token);
-        authResponse.setMessage("Login successful");
-        authResponse.setRole(user.getRole());
-        
-        return new ResponseEntity<>(authResponse, HttpStatus.OK);
+        try {
+            System.out.println("AuthController - Login attempt for email: " + request.getEmail());
+            
+            String email = request.getEmail();
+            String password = request.getPassword();
+            
+            Authentication authentication = authenticate(email, password);
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+            
+            System.out.println("AuthController - Authentication successful for: " + email);
+            System.out.println("AuthController - User authorities: " + authentication.getAuthorities());
+            
+            String token = jwtProvider.generateToken(authentication);
+            System.out.println("AuthController - JWT token generated: " + token.substring(0, 20) + "...");
+            
+            UserDetails userDetails = customerUserDetailsService.loadUserByUsername(email);
+            User user = userRepository.findByEmail(email);
+            
+            AuthResponse authResponse = new AuthResponse();
+            authResponse.setJwt(token);
+            authResponse.setMessage("Login successful");
+            authResponse.setRole(user.getRole());
+            authResponse.setFullName(user.getFullname());
+            
+            System.out.println("AuthController - Login successful for user: " + user.getFullname() + " with role: " + user.getRole());
+            
+            return new ResponseEntity<>(authResponse, HttpStatus.OK);
+        } catch (Exception e) {
+            System.err.println("AuthController - Login failed: " + e.getMessage());
+            throw e;
+        }
     }
     
     private Authentication authenticate(String email, String password) {
-        UserDetails userDetails = customerUserDetailsService.loadUserByUsername(email);
-        
-        if (userDetails == null) {
-            throw new BadCredentialsException("Invalid email");
+        try {
+            UserDetails userDetails = customerUserDetailsService.loadUserByUsername(email);
+            
+            if (userDetails == null) {
+                System.err.println("AuthController - Authentication failed: User not found for email: " + email);
+                throw new BadCredentialsException("Invalid email");
+            }
+            
+            if (!passwordEncoder.matches(password, userDetails.getPassword())) {
+                System.err.println("AuthController - Authentication failed: Invalid password for email: " + email);
+                throw new BadCredentialsException("Invalid password");
+            }
+            
+            System.out.println("AuthController - Password validated for user: " + email);
+            return new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+        } catch (Exception e) {
+            System.err.println("AuthController - Authentication error: " + e.getMessage());
+            throw e;
         }
-        
-        if (!passwordEncoder.matches(password, userDetails.getPassword())) {
-            throw new BadCredentialsException("Invalid password");
-        }
-        
-        return new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
     }
 } 
