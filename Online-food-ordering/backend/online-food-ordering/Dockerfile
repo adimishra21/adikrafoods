@@ -6,5 +6,7 @@ RUN mvn clean package -DskipTests
 FROM openjdk:17-jdk-slim
 WORKDIR /app
 COPY --from=build /app/target/*.jar app.jar
-EXPOSE 8080
-ENTRYPOINT ["java","-jar","app.jar"] 
+EXPOSE 5454
+HEALTHCHECK --interval=30s --timeout=3s \
+  CMD curl -f http://localhost:5454/actuator/health || exit 1
+ENTRYPOINT ["java", "-jar", "app.jar"] 

@@ -1,0 +1,47 @@
+version: '3.8'
+
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: adikrafoods-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: adikrafoods
+      MYSQL_USER: adikra
+      MYSQL_PASSWORD: adikrapass
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+  backend:
+    build:
+      context: ./Online-food-ordering/backend/online-food-ordering
+      dockerfile: Dockerfile
+    container_name: adikrafoods-backend
+    depends_on:
+      - mysql
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
+      - MYSQL_URL=jdbc:mysql://mysql:3306/adikrafoods
+      - MYSQL_USER=adikra
+      - MYSQL_PASSWORD=adikrapass
+      - JWT_SECRET=your-secret-key
+      - PORT=5454
+    ports:
+      - "5454:5454"
+
+  frontend:
+    build:
+      context: ./frontend/food-ordering-app
+      dockerfile: Dockerfile
+    container_name: adikrafoods-frontend
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
+    environment:
+      - REACT_APP_API_URL=http://localhost:5454
+
+volumes:
+  mysql_data: 

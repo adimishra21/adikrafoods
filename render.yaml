@@ -1,0 +1,12 @@
+services:
+  - type: web
+    name: adikrafoods-api
+    env: java
+    rootDir: Online-food-ordering/backend/online-food-ordering
+    buildCommand: ./mvnw package -DskipTests
+    startCommand: java -jar target/*.jar
+    envVars:
+      - key: SPRING_PROFILES_ACTIVE
+        value: prod
+      - key: PORT
+        value: 5454 
