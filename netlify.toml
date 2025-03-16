@@ -2,20 +2,10 @@
   base = "frontend/food-ordering-app"
   publish = "build"
   command = "npm run build"
-  functions = "functions"
-
-[functions]
-  external_node_modules = ["express"]
-  node_bundler = "esbuild"
 
 [[redirects]]
   from = "/*"
   to = "/index.html"
-  status = 200
-
-[[redirects]]
-  from = "/api/*"
-  to = "/.netlify/functions/api/:splat"
   status = 200
 
 [build.environment]
