@@ -1,0 +1,47 @@
+{
+  "version": 2,
+  "builds": [
+    {
+      "src": "frontend/food-ordering-app/package.json",
+      "use": "@vercel/static-build",
+      "config": {
+        "distDir": "build"
+      }
+    },
+    {
+      "src": "backend/server.js",
+      "use": "@vercel/node"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/api/(.*)",
+      "dest": "backend/server.js"
+    },
+    {
+      "src": "^/static/(.*)",
+      "dest": "frontend/food-ordering-app/build/static/$1"
+    },
+    {
+      "src": "^/favicon.ico",
+      "dest": "frontend/food-ordering-app/build/favicon.ico"
+    },
+    {
+      "src": "^/manifest.json",
+      "dest": "frontend/food-ordering-app/build/manifest.json"
+    },
+    {
+      "src": "^/asset-manifest.json",
+      "dest": "frontend/food-ordering-app/build/asset-manifest.json"
+    },
+    {
+      "src": "^/(.*)",
+      "dest": "frontend/food-ordering-app/build/index.html"
+    }
+  ],
+  "env": {
+    "NODE_ENV": "production",
+    "MONGODB_URI": "@mongodb_uri",
+    "JWT_SECRET": "@jwt_secret"
+  }
+} 
