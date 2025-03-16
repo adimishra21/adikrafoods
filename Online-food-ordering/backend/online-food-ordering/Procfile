@@ -1,0 +1,1 @@
+web: java -jar target/online-food-ordering-0.0.1-SNAPSHOT.jar 
