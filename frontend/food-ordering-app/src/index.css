@@ -1,0 +1,206 @@
+body {
+  margin: 0;
+  font-family: 'Roboto', 'Helvetica Neue', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: #121212;
+  color: #ffffff;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #1e1e1e;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #ff1744;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #d50000;
+}
+
+/* Utility classes */
+.text-center {
+  text-align: center;
+}
+
+.mt-2 {
+  margin-top: 16px;
+}
+
+.mb-2 {
+  margin-bottom: 16px;
+}
+
+.p-2 {
+  padding: 16px;
+}
+
+/* Food item card styles */
+.food-item-card {
+  transition: transform 0.3s ease;
+}
+
+.food-item-card:hover {
+  transform: translateY(-5px);
+}
+
+/* Restaurant card styles */
+.restaurant-card {
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.restaurant-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+}
+
+.restaurant-status {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-weight: bold;
+  z-index: 1;
+}
+
+.restaurant-status.open {
+  background-color: #4caf50;
+  color: white;
+}
+
+.restaurant-status.closed {
+  background-color: #f44336;
+  color: white;
+}
+
+/* Circular food items */
+.circular-food-item {
+  border-radius: 50%;
+  overflow: hidden;
+  width: 120px;
+  height: 120px;
+  margin: 0 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  transition: transform 0.3s ease;
+}
+
+.circular-food-item:hover {
+  transform: scale(1.05);
+}
+
+/* Hero section */
+.hero-section {
+  position: relative;
+  height: 60vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-size: cover;
+  background-position: center;
+  color: white;
+  text-align: center;
+}
+
+.hero-section::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.6);
+}
+
+.hero-content {
+  position: relative;
+  z-index: 1;
+}
+
+/* Filter sidebar */
+.filter-sidebar {
+  background-color: rgba(18, 18, 18, 0.9);
+  padding: 16px;
+  border-radius: 8px;
+  margin-right: 16px;
+}
+
+.filter-title {
+  color: #ff1744;
+  margin-bottom: 16px;
+  font-weight: bold;
+}
+
+.filter-section {
+  margin-bottom: 24px;
+}
+
+/* Blue bullets for lists */
+ul.blue-bullets {
+  list-style: none;
+  padding-left: 0;
+}
+
+ul.blue-bullets li {
+  position: relative;
+  padding-left: 20px;
+  margin-bottom: 8px;
+}
+
+ul.blue-bullets li::before {
+  content: '•';
+  position: absolute;
+  left: 0;
+  color: #2979ff;
+  font-size: 20px;
+  line-height: 20px;
+}
+
+/* Horizontal scrollable container */
+.horizontal-scroll {
+  display: flex;
+  overflow-x: auto;
+  padding: 16px 0;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none; /* Firefox */
+}
+
+.horizontal-scroll::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera */
+}
+
+/* Search suggestions */
+.search-suggestions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.suggestion-chip {
+  background-color: rgba(41, 121, 255, 0.2);
+  color: white;
+  border: 1px solid #2979ff;
+  padding: 4px 12px;
+  border-radius: 16px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.suggestion-chip:hover {
+  background-color: rgba(41, 121, 255, 0.4);
+}

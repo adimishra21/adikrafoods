@@ -9,14 +9,17 @@
       }
     },
     {
-      "src": "backend/server.js",
-      "use": "@vercel/node"
+      "src": "backend/online-food-ordering/target/*.jar",
+      "use": "@vercel/java",
+      "config": {
+        "runtime": "java17"
+      }
     }
   ],
   "routes": [
     {
       "src": "/api/(.*)",
-      "dest": "backend/server.js"
+      "dest": "backend/online-food-ordering/target/online-food-ordering-0.0.1-SNAPSHOT.jar"
     },
     {
       "src": "^/static/(.*)",
@@ -35,13 +38,19 @@
       "dest": "frontend/food-ordering-app/build/asset-manifest.json"
     },
     {
-      "src": "^/(.*)",
+      "src": "^/((?!api/).*)",
       "dest": "frontend/food-ordering-app/build/index.html"
     }
   ],
   "env": {
-    "NODE_ENV": "production",
-    "MONGODB_URI": "@mongodb_uri",
-    "JWT_SECRET": "@jwt_secret"
+    "SPRING_PROFILES_ACTIVE": "prod",
+    "SERVER_PORT": "5454",
+    "SPRING_DATASOURCE_URL": "@spring_datasource_url",
+    "SPRING_DATASOURCE_USERNAME": "@spring_datasource_username",
+    "SPRING_DATASOURCE_PASSWORD": "@spring_datasource_password",
+    "SPRING_JPA_HIBERNATE_DDL_AUTO": "update",
+    "SPRING_JPA_SHOW_SQL": "false",
+    "SPRING_FLYWAY_ENABLED": "true",
+    "SPRING_FLYWAY_BASELINE_ON_MIGRATE": "true"
   }
 } 
