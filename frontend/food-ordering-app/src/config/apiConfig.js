@@ -1,11 +1,11 @@
 import axios from 'axios';
 
 // Get the API URL from environment variable, fallback to localhost for development
-const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5454';
+const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:5454';
 
 // Create an axios instance with default config
 const api = axios.create({
-  baseURL: API_URL,
+  baseURL: API_BASE_URL,
   headers: {
     'Content-Type': 'application/json',
   },
@@ -42,4 +42,15 @@ api.interceptors.response.use(
   }
 );
 
-export { api }; 
+export const apiEndpoints = {
+    auth: {
+        login: '/auth/login',
+        register: '/auth/register',
+    },
+    restaurants: '/restaurants',
+    menu: '/menu',
+    orders: '/orders',
+    cart: '/cart',
+};
+
+export default api; 
