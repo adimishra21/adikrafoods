@@ -1,8 +1,12 @@
 services:
   - type: web
     name: adikrafoods-api
-    runtime: docker
+    runtime: java
+    plan: free
     rootDir: backend/online-food-ordering
+    preDeployCommand: chmod +x ./mvnw  # Make the Maven wrapper executable
+    buildCommand: ./mvnw package -DskipTests
+    startCommand: java -Dspring.profiles.active=prod -jar target/*.jar
     envVars:
       - key: SPRING_PROFILES_ACTIVE
         value: prod
