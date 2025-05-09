@@ -1,7 +1,7 @@
 services:
   - type: web
     name: adikrafoods-api
-    env: docker
+    runtime: docker
     rootDir: backend/online-food-ordering
     envVars:
       - key: SPRING_PROFILES_ACTIVE
