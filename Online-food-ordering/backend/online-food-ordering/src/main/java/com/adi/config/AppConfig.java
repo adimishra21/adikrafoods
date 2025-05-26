@@ -80,7 +80,8 @@ public class AppConfig {
                 cfg.setAllowedOrigins(Arrays.asList(
                         "http://adi-food.vercel.app",
                         "http://localhost:3000",
-                        "http://localhost:5173"
+                        "http://localhost:5173",
+                        "https://foodorderingsiteadi.netlify.app"
                 ));
                 cfg.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
                 cfg.setAllowCredentials(true);
